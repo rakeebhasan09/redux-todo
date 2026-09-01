@@ -18,13 +18,22 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { STATUS_LABEL, TASK_STATUS } from "@/redux/features/tasks";
+import {
+    PRIORITY_LABEL,
+    STATUS_LABEL,
+    TASK_PRIORITY,
+    TASK_STATUS,
+} from "@/redux/features/tasks";
+import { useAppDispatch } from "@/redux/hooks";
+import { addTask } from "@/redux/features/tasks/tasks.slice";
 
 export function TaskFormDialog({ open, mode, onClose }) {
     const { register, handleSubmit, control } = useForm();
+    const dispatch = useAppDispatch();
 
     const onSubmit = (values) => {
         console.log(values);
+        dispatch(addTask(values));
         onClose();
     };
 
@@ -116,6 +125,17 @@ export function TaskFormDialog({ open, mode, onClose }) {
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select priority" />
                                         </SelectTrigger>
+                                        <SelectContent>
+                                            {TASK_PRIORITY.map((priority) => (
+                                                <SelectItem
+                                                    className="capitalize"
+                                                    value={priority}
+                                                    key={priority}
+                                                >
+                                                    {PRIORITY_LABEL[priority]}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
                                     </Select>
                                 )}
                             />
