@@ -17,6 +17,7 @@ import { PriorityBadge } from "./PriorityBadge";
 import { cn } from "@/lib/utils";
 import {
     STATUS_LABEL,
+    TASK_STATUS,
     type ITask,
     type TTaskStatus,
 } from "@/redux/features/tasks";
@@ -29,7 +30,7 @@ const STATUS_DOT: Record<TTaskStatus, string> = {
 
 interface IProps {
     task: ITask;
-    onEdit: () => void;
+    onEdit: (id: string) => void;
 }
 
 export function TaskItem({ task, onEdit }: IProps) {
@@ -57,7 +58,7 @@ export function TaskItem({ task, onEdit }: IProps) {
                     </span>
                     <span className="text-xs text-muted-foreground">·</span>
                     <span className="text-xs text-muted-foreground">
-                        {/* {formatDistanceToNow(task.updatedAt, { addSuffix: true })} */}
+                        {formatDistanceToNow(task.updatedAt, { addSuffix: true })}
                     </span>
                 </div>
 
@@ -98,11 +99,11 @@ export function TaskItem({ task, onEdit }: IProps) {
                         value={task.status}
                         onValueChange={handleStatusChange}
                     >
-                        {/* {TASK_STATUSES.map((s) => (
+                        {TASK_STATUS.map((s) => (
               <DropdownMenuRadioItem key={s} value={s}>
                 {STATUS_LABEL[s]}
               </DropdownMenuRadioItem>
-            ))} */}
+            ))}
                     </DropdownMenuRadioGroup>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onSelect={() => onEdit(task.id)}>
