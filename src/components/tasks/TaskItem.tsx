@@ -21,6 +21,8 @@ import {
     type ITask,
     type TTaskStatus,
 } from "@/redux/features/tasks";
+import { useAppDispatch } from "@/redux/hooks";
+import { removeTask, updateStatus } from "@/redux/features/tasks/tasks.slice";
 
 const STATUS_DOT: Record<TTaskStatus, string> = {
     pending: "bg-slate-400",
@@ -34,11 +36,15 @@ interface IProps {
 }
 
 export function TaskItem({ task, onEdit }: IProps) {
+    const dispatch = useAppDispatch();
     const handleStatusChange = (value: string) => {
-        console.log(value);
+        const status = value as TTaskStatus;
+        dispatch(updateStatus({id: task.id, status}));
+        toast.success('Task status updated')
     };
 
     const handleDelete = () => {
+        dispatch(removeTask(task.id));
         toast.warning("Task deleted", { description: task.title });
     };
 
