@@ -39,8 +39,8 @@ export function TaskItem({ task, onEdit }: IProps) {
     const dispatch = useAppDispatch();
     const handleStatusChange = (value: string) => {
         const status = value as TTaskStatus;
-        dispatch(updateStatus({id: task.id, status}));
-        toast.success('Task status updated')
+        dispatch(updateStatus({ id: task.id, status }));
+        toast.success("Task status updated");
     };
 
     const handleDelete = () => {
@@ -64,7 +64,9 @@ export function TaskItem({ task, onEdit }: IProps) {
                     </span>
                     <span className="text-xs text-muted-foreground">·</span>
                     <span className="text-xs text-muted-foreground">
-                        {formatDistanceToNow(task.updatedAt, { addSuffix: true })}
+                        {formatDistanceToNow(task.updatedAt, {
+                            addSuffix: true,
+                        })}
                     </span>
                 </div>
 
@@ -106,10 +108,10 @@ export function TaskItem({ task, onEdit }: IProps) {
                         onValueChange={handleStatusChange}
                     >
                         {TASK_STATUS.map((s) => (
-              <DropdownMenuRadioItem key={s} value={s}>
-                {STATUS_LABEL[s]}
-              </DropdownMenuRadioItem>
-            ))}
+                            <DropdownMenuRadioItem key={s} value={s}>
+                                {STATUS_LABEL[s]}
+                            </DropdownMenuRadioItem>
+                        ))}
                     </DropdownMenuRadioGroup>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onSelect={() => onEdit(task.id)}>

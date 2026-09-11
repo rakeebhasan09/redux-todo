@@ -24,8 +24,11 @@ import {
     TASK_PRIORITY,
     TASK_STATUS,
 } from "@/redux/features/tasks";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addTask } from "@/redux/features/tasks/tasks.slice";
+import { useEffect } from "react";
+import { selectTaskById } from "@/redux/features/tasks/tasks.selector";
+import type { RootState } from "@/redux/store";
 
 type TDialogMode = "create" | "edit";
 
@@ -33,15 +36,26 @@ interface IProps {
     open: boolean;
     mode: TDialogMode;
     onClose: () => void;
+    editingId: string | null;
 }
 
-export function TaskFormDialog({ open, mode, onClose }: IProps) {
-    const { register, handleSubmit, control } = useForm();
+export function TaskFormDialog({ open, mode, onClose, editingId }: IProps) {
+    const { register, handleSubmit, control, reset } = useForm();
     const dispatch = useAppDispatch();
+    const editing = useAppSelector((state: RootState) =>
+        editingId ? selectTaskById(state, editingId) : undefined,
+    );
+
+    useEffect(() => {
+        reset({
+            title: "Test Task",
+        });
+    });
 
     const onSubmit = (values) => {
         console.log(values);
         dispatch(addTask(values));
+        reset();
         onClose();
     };
 
