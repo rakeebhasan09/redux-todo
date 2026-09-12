@@ -23,12 +23,15 @@ import {
     STATUS_LABEL,
     TASK_PRIORITY,
     TASK_STATUS,
+    type ITaskInput,
 } from "@/redux/features/tasks";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { addTask } from "@/redux/features/tasks/tasks.slice";
+import { addTask, updateTask } from "@/redux/features/tasks/tasks.slice";
 import { useEffect } from "react";
 import { selectTaskById } from "@/redux/features/tasks/tasks.selector";
 import type { RootState } from "@/redux/store";
+import { taskFormDefaultValues } from "@/redux/features/tasks/tasks.schema";
+import { toast } from "sonner";
 
 type TDialogMode = "create" | "edit";
 
@@ -40,22 +43,34 @@ interface IProps {
 }
 
 export function TaskFormDialog({ open, mode, onClose, editingId }: IProps) {
-    const { register, handleSubmit, control, reset } = useForm();
+    const { register, handleSubmit, control, reset } = useForm<ITaskInput>();
     const dispatch = useAppDispatch();
     const editing = useAppSelector((state: RootState) =>
         editingId ? selectTaskById(state, editingId) : undefined,
     );
 
     useEffect(() => {
-        reset({
-            title: "Test Task",
-        });
-    });
+        if (!open) return;
+        if (mode === "edit" && editing) {
+            reset({
+                title: editing.title,
+                description: editing.description,
+                status: editing.status,
+                priority: editing.priority,
+            });
+        } else {
+            reset(taskFormDefaultValues);
+        }
+    }, [reset, open, mode, editing]);
 
-    const onSubmit = (values) => {
-        console.log(values);
-        dispatch(addTask(values));
-        reset();
+    const onSubmit = (values: ITaskInput) => {
+        if (mode === "edit" && editing) {
+            dispatch(updateTask({ id: editing.id, change: values }));
+            toast.success("Task updated");
+        } else {
+            dispatch(addTask(values));
+            toast.success("Task created");
+        }
         onClose();
     };
 
