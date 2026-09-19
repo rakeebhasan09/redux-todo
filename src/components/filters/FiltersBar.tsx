@@ -15,7 +15,19 @@ import {
     TASK_PRIORITY,
     TASK_STATUS,
 } from "@/redux/features/tasks";
-import type { TSortMode } from "@/redux/features/filters";
+import {
+    changePriorityFilter,
+    changeQuery,
+    changeSortMode,
+    changeStatusFilter,
+    clearFilters,
+    selectPriority,
+    selectQuery,
+    selectSortMode,
+    selectStatusFilter,
+    type TSortMode,
+} from "@/redux/features/filters";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 const SORT_LABEL: Record<TSortMode, string> = {
     newest: "Newest",
@@ -23,15 +35,30 @@ const SORT_LABEL: Record<TSortMode, string> = {
 };
 
 export function FiltersBar() {
+    const dispatch = useAppDispatch();
+    const query = useAppSelector(selectQuery);
+    const status = useAppSelector(selectStatusFilter);
+    const priority = useAppSelector(selectPriority);
+    const sort = useAppSelector(selectSortMode);
     return (
         <Card className="flex flex-col gap-3 p-3 sm:flex-row sm:items-center">
             <div className="relative flex-1">
                 <SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <Input placeholder="Search tasks…" className="pl-9" />
+                <Input
+                    placeholder="Search tasks…"
+                    className="pl-9"
+                    onChange={(e) => dispatch(changeQuery(e.target.value))}
+                    value={query}
+                />
             </div>
 
             <div className="grid grid-cols-3 gap-2 sm:flex sm:items-center">
-                <Select value={status}>
+                <Select
+                    value={status}
+                    onValueChange={(value) =>
+                        dispatch(changeStatusFilter(value))
+                    }
+                >
                     <SelectTrigger className="min-w-30">
                         <SelectValue />
                     </SelectTrigger>
@@ -45,7 +72,12 @@ export function FiltersBar() {
                     </SelectContent>
                 </Select>
 
-                <Select>
+                <Select
+                    value={priority}
+                    onValueChange={(value) =>
+                        dispatch(changePriorityFilter(value))
+                    }
+                >
                     <SelectTrigger className="min-w-30">
                         <SelectValue />
                     </SelectTrigger>
@@ -59,7 +91,10 @@ export function FiltersBar() {
                     </SelectContent>
                 </Select>
 
-                <Select>
+                <Select
+                    value={sort}
+                    onValueChange={(value) => dispatch(changeSortMode(value))}
+                >
                     <SelectTrigger className="min-w-30">
                         <SelectValue />
                     </SelectTrigger>
@@ -75,7 +110,11 @@ export function FiltersBar() {
                 </Select>
             </div>
 
-            <Button variant="ghost" size="sm">
+            <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => dispatch(clearFilters())}
+            >
                 <XIcon className="size-4" /> Clear
             </Button>
         </Card>
