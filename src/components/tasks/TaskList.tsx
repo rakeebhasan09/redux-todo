@@ -1,7 +1,7 @@
 import { TaskItem } from "./TaskItem";
 import { Card } from "@/components/ui/card";
 import {
-    selectAllTasks,
+    selectFilteredTasks,
     selectTotalTasks,
 } from "@/redux/features/tasks/tasks.selector";
 import { useAppSelector } from "@/redux/hooks";
@@ -12,7 +12,7 @@ interface IProps {
 }
 
 export function TaskList({ onEdit }: IProps) {
-    const tasks = useAppSelector(selectAllTasks);
+    const tasks = useAppSelector(selectFilteredTasks);
     const total = useAppSelector(selectTotalTasks);
     const isFiltering = false;
 
