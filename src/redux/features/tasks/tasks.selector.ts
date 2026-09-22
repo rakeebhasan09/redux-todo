@@ -28,13 +28,41 @@ export const selectTaskStats = createSelector([selectAllTasks], (tasks) => {
 export const selectFilteredTasks = createSelector(
     [selectAllTasks, selectFilters],
     (tasks, filters) => {
+        const { query, priority, status, sort } = filters;
         const filtered = tasks.filter((task) => {
-            const { query, priority, status, sort } = filters;
+            const serchTerm = query.trim().toLocaleLowerCase();
+            // Filter by Priority
             if (priority !== "all" && task.priority !== priority) {
                 return false;
             }
+
+            // Filter by Status
+            if (status !== "all" && task.status !== status) {
+                return false;
+            }
+
+            // Filter by Query
+            if (serchTerm) {
+                const text =
+                    `${task.title} ${task.description}`.toLocaleLowerCase();
+                if (!text.includes(serchTerm)) {
+                    return false;
+                }
+            }
+
             return true;
         });
-        return filtered;
+
+        const sorted = [...filtered];
+        switch (sort) {
+            case "newest":
+                sorted.sort((a, b) => b.createdAt - a.createdAt);
+                break;
+
+            case "oldest":
+                sorted.sort((a, b) => a.createdAt - b.createdAt);
+                break;
+        }
+        return sorted;
     },
 );
