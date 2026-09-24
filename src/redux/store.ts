@@ -1,11 +1,31 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { rootReducer } from "./rootReducer";
-import { logger } from "redux-logger";
-import { persistStore } from "redux-persist";
+// import { logger } from "redux-logger";
+import {
+    FLUSH,
+    PAUSE,
+    PERSIST,
+    persistStore,
+    PURGE,
+    REGISTER,
+    REHYDRATE,
+} from "redux-persist";
 
 export const store = configureStore({
     reducer: rootReducer,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: {
+                ignoredActions: [
+                    FLUSH,
+                    REHYDRATE,
+                    PAUSE,
+                    PERSIST,
+                    PURGE,
+                    REGISTER,
+                ],
+            },
+        }),
     devTools: import.meta.env.VITE_NODE_ENV === "development",
 });
 
